@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import main.GamePanel;
+import main.UtilityTool;
 
 public class Player extends Entity {
 
@@ -16,7 +17,10 @@ public class Player extends Entity {
     //Indicate where playe drop 
     public final int screenX;
     public final int screenY;
-    int hasKey = 0;
+    public int hasKey = 0;
+    
+    //Player´s healt.
+    public int healt;
 
     public Player(GamePanel gp, Keyboard keyboard) {
         this.gp = gp;
@@ -41,26 +45,39 @@ public class Player extends Entity {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
         speed = 4;
+        healt = 100;
         direction = "down";
     }
 
+    //Load the sprites.
     public void getPlayerImage() {
-        try {
-
-            up1 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_up_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_right_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/boy_down_2.png"));
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
+        up1 = setup("boy_up_1");
+        up2 = setup("boy_up_2");
+        down1 = setup("boy_down_1");
+        down2 = setup("boy_down_2");
+        left1 = setup("boy_left_1");
+        left2 = setup("boy_left_2");
+        right1 = setup("boy_right_1");
+        right2 = setup("boy_right_2");
     }
 
+    public BufferedImage setup(String imageNAme){
+        UtilityTool uTool = new UtilityTool();
+        
+        BufferedImage image = null;
+        
+        try {
+            image = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/"+imageNAme+".png"));
+            image = uTool.scaledImage(image, gp.tileSize, gp.tileSize);
+            
+        } catch (Exception e) {
+        }
+        return image;
+        
+    }
+    
+    //Steps and collision
     public void update() {
         int speed = 4;
         int speedSprite = 12;
@@ -143,24 +160,32 @@ public class Player extends Entity {
             switch (objectName) {
                 case "Key":
                     gp.playSE(1);
-                    hasKey++;
-                    gp.obj[index] = null;
                     
+                    gp.obj[index] = null;
+                    if(hasKey == 0){
+                        gp.ui.showMessage("¿Una llave?");
+                    }
+                    else{
+                        gp.ui.showMessage("¿Otra llave?");
+                    }
+                    hasKey++;
                     break;
                 case "Door":
                     if(hasKey > 0){
                         gp.playSE(3);
                         gp.obj[index] = null;
                         hasKey--;
-                        System.out.println("key: "+ hasKey);
+                        
                     }
                     else{
                         gp.playSE(5);
-                        System.out.println("You need a key to open the door");
+                        gp.ui.showMessage("¿Hum?... Creo que necisito una llave");
                     }
                     break;
                 case "Chest":
-
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);
                     break;
                 
             }

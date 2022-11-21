@@ -14,7 +14,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //Screen settings
     public final int originalTileSize = 16; //16*16 tile.
-    public final int scale = 4;
+    public final int scale = 5;
     public final int fps = 60;
     public final int tileSize = originalTileSize * scale; //64 X 64 PX TILES
     public final int maxScreenCol = 16;
@@ -35,6 +35,7 @@ public class GamePanel extends JPanel implements Runnable {
     Sound se = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
+    public UI ui = new UI(this);
     Thread gameThread;
 
     //Entity and objects.
@@ -62,7 +63,8 @@ public class GamePanel extends JPanel implements Runnable {
     
     @Override
     public void run() {
-        double FPS = 1000000000 / fps, delta = 0;
+        double FPS = 1000000000 / fps;
+        double delta = 0;
         long lastTime = System.nanoTime(), currentTime, timer = 0;
         int drawCount = 0;
         
@@ -112,6 +114,9 @@ public class GamePanel extends JPanel implements Runnable {
 
         //Player draw
         player.draw(g2);
+        
+        //Paint the UI
+        ui.draw(g2);
         
         g2.dispose();
     }

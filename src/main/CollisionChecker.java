@@ -26,7 +26,7 @@ public class CollisionChecker {
 
         switch (entity.direction) {
             case "up":
-                entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
+                entityTopRow = (entityTopWorldY  - entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityTopRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityTopRow];
                 if (gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {
@@ -34,8 +34,8 @@ public class CollisionChecker {
                 }
                 break;
             case "down":
-                //If i want i'll change for +42 after entityBottomWorldY
-                entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
+                //
+                entityBottomRow = (entityBottomWorldY +5+ entity.speed) / gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityLeftCol][entityBottomRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol][entityBottomRow];
                 if (gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true) {

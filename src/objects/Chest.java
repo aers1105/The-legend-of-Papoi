@@ -7,18 +7,23 @@ package objects;
 
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import main.GamePanel;
 
 /**
  *
  * @author angel
  */
 public class Chest extends Objects{
-    public Chest() {
+    GamePanel gp;
+
+    public Chest(GamePanel gp) {
         name = "Chest";
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/images/Objetos/chest.png"));
-        } catch (IOException e) {
+            uTool.scaledImage(image, gp.tileSize, gp.tileSize);
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
