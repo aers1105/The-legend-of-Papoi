@@ -1,22 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import main.GamePanel;
 
-/**
- *
- * @author angel
- */
 public class Keyboard implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, enterPressed,runPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, runPressed, enterPressed;
 
-    
+    GamePanel gp;
+
+    public Keyboard(GamePanel gp) {
+        this.gp = gp;
+    }
+
     //Sin usar
     @Override
     public void keyTyped(KeyEvent ke) {
@@ -27,37 +24,84 @@ public class Keyboard implements KeyListener {
     public void keyPressed(KeyEvent ke) {
         int code = ke.getKeyCode();
 
-        if (code == KeyEvent.VK_W) {
-            upPressed = true;
+        //MainState
+        if (gp.gameState == gp.mainState || gp.gameState == gp.gameOverState) {
+            if (code == KeyEvent.VK_W) {
+                gp.ui.commandNumber--;
+                if (gp.ui.commandNumber < 0) {
+                    gp.ui.commandNumber = 2;
+                }
+
+            }
+            if (code == KeyEvent.VK_S) {
+                gp.ui.commandNumber++;
+                if (gp.ui.commandNumber > 2) {
+                    gp.ui.commandNumber = 0;
+                }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNumber == 0) {
+                    gp.gameState = gp.playState;
+                }
+                if (gp.ui.commandNumber == 1) {
+                    //add latter
+                }
+                if (gp.ui.commandNumber == 2) {
+                    System.exit(0);
+                }
+            }
+
         }
-        if (code == KeyEvent.VK_S) {
-            downPressed = true;
+
+        //PlayState
+        if (gp.gameState == gp.playState) {
+            if (code == KeyEvent.VK_W) {
+                upPressed = true;
+            }
+            if (code == KeyEvent.VK_S) {
+                downPressed = true;
+            }
+            if (code == KeyEvent.VK_A) {
+                leftPressed = true;
+            }
+            if (code == KeyEvent.VK_D) {
+                rightPressed = true;
+            }
+            if (code == KeyEvent.VK_I) {
+                swordPressed = true;
+            }
+            if (code == KeyEvent.VK_O) {
+                bombPressed = true;
+            }
+            if (code == KeyEvent.VK_SHIFT) {
+                runPressed = true;
+            }
+            if (code == KeyEvent.VK_ESCAPE) {
+                gp.gameState = gp.pauseState;
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                enterPressed = true;
+            }
         }
-        if (code == KeyEvent.VK_A) {
-            leftPressed = true;
+        //PauseState
+        if (gp.gameState == gp.pauseState) {
+            if (code == KeyEvent.VK_ESCAPE) {
+                gp.gameState = gp.playState;
+            }
         }
-        if (code == KeyEvent.VK_D) {
-            rightPressed = true;
-        }
-        if(code == KeyEvent.VK_O){
-            swordPressed = true;
-        }
-        if(code == KeyEvent.VK_P){
-            bombPressed = true;
-        }
-        if(code == KeyEvent.VK_ENTER){
-            enterPressed = true;
-        }
-        if(code == KeyEvent.VK_SHIFT){
-            runPressed = true;
-        }
+        //DialogueState
+        if (gp.gameState == gp.dioalogueState) {
+            if (code == KeyEvent.VK_I) {
+                gp.gameState = gp.playState;
+            }
         
+        }
 
     }
 
     @Override
     public void keyReleased(KeyEvent ke) {
-         int code = ke.getKeyCode();
+        int code = ke.getKeyCode();
         if (code == KeyEvent.VK_W) {
             upPressed = false;
         }
@@ -70,21 +114,20 @@ public class Keyboard implements KeyListener {
         if (code == KeyEvent.VK_D) {
             rightPressed = false;
         }
-        if(code == KeyEvent.VK_ENTER){
-            enterPressed = false;
-        }
-        
-        if(code == KeyEvent.VK_O){
+
+        if (code == KeyEvent.VK_I) {
             swordPressed = false;
         }
-        if(code == KeyEvent.VK_P){
+        if (code == KeyEvent.VK_O) {
             bombPressed = false;
         }
-        if(code == KeyEvent.VK_SHIFT){
+        if (code == KeyEvent.VK_SHIFT) {
             runPressed = false;
         }
-        
-        
+        if (code == KeyEvent.VK_ENTER) {
+            enterPressed = false;
+        }
+
     }
 
 }

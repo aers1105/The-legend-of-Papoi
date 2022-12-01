@@ -1,29 +1,24 @@
 package entity;
 
 import control.Keyboard;
+import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import main.GamePanel;
-import main.UtilityTool;
 
 public class Player extends Entity {
 
-    GamePanel gp;
     Keyboard keyboard;
 
     //Indicate where playe drop 
-    public final int screenX;
-    public final int screenY;
-    public int hasKey = 0;
-    
-    //Player´s healt.
-    public int healt;
+    public int screenX;
+    public int screenY;
+    public int hasKey, mana, maxMana;
 
     public Player(GamePanel gp, Keyboard keyboard) {
-        this.gp = gp;
+        super(gp);
+
         this.keyboard = keyboard;
 
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
@@ -37,79 +32,91 @@ public class Player extends Entity {
         solidArea.width = 32;
         solidArea.height = 32;
 
+        attackArea.width = 36;
+        attackArea.height = 36;
+        
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
         speed = 4;
-        healt = 100;
         direction = "down";
+        maxLife = 6;
+        life = maxLife;
+        powerAttack = 2;
+
     }
 
     //Load the sprites.
     public void getPlayerImage() {
-        
-        up1 = setup("boy_up_1");
-        up2 = setup("boy_up_2");
-        down1 = setup("boy_down_1");
-        down2 = setup("boy_down_2");
-        left1 = setup("boy_left_1");
-        left2 = setup("boy_left_2");
-        right1 = setup("boy_right_1");
-        right2 = setup("boy_right_2");
+
+        up1 = setup("/images/player/Walking_sprites/boy_up_1", gp.tileSize, gp.tileSize);
+        up2 = setup("/images/player/Walking_sprites/boy_up_2", gp.tileSize, gp.tileSize);
+        down1 = setup("/images/player/Walking_sprites/boy_down_1", gp.tileSize, gp.tileSize);
+        down2 = setup("/images/player/Walking_sprites/boy_down_2", gp.tileSize, gp.tileSize);
+        left1 = setup("/images/player/Walking_sprites/boy_left_1", gp.tileSize, gp.tileSize);
+        left2 = setup("/images/player/Walking_sprites/boy_left_2", gp.tileSize, gp.tileSize);
+        right1 = setup("/images/player/Walking_sprites/boy_right_1", gp.tileSize, gp.tileSize);
+        right2 = setup("/images/player/Walking_sprites/boy_right_2", gp.tileSize, gp.tileSize);
     }
 
-    public BufferedImage setup(String imageNAme){
-        UtilityTool uTool = new UtilityTool();
-        
-        BufferedImage image = null;
-        
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream("/images/player/Walking_sprites/"+imageNAme+".png"));
-            image = uTool.scaledImage(image, gp.tileSize, gp.tileSize);
-            
-        } catch (Exception e) {
-        }
-        return image;
-        
+    public void getPlayerAttackImage() {
+
+        attackUp1 = setup("/images/player/Attacking_sprites/boy_attack_up_1", gp.tileSize, gp.tileSize * 2);
+        attackUp2 = setup("/images/player/Attacking_sprites/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);
+        attackDown1 = setup("/images/player/Attacking_sprites/boy_attack_down_1", gp.tileSize, gp.tileSize * 2);
+        attackDown2 = setup("/images/player/Attacking_sprites/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);
+        attackLeft1 = setup("/images/player/Attacking_sprites/boy_attack_left_1", gp.tileSize * 2, gp.tileSize);
+        attackLeft2 = setup("/images/player/Attacking_sprites/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);
+        attackRight1 = setup("/images/player/Attacking_sprites/boy_attack_right_1", gp.tileSize * 2, gp.tileSize);
+        attackRight2 = setup("/images/player/Attacking_sprites/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);
     }
-    
+
     //Steps and collision
+    @Override
     public void update() {
         int speed = 4;
         int speedSprite = 12;
-        if (keyboard.upPressed == true || keyboard.downPressed == true
-                || keyboard.leftPressed == true || keyboard.rightPressed == true) {
+        getPlayerAttackImage();
+        if (attacking) {
+            attacking();
+        }
+        if (keyboard.upPressed
+                || keyboard.downPressed
+                || keyboard.leftPressed
+                || keyboard.rightPressed
+                || keyboard.swordPressed) {
 
             if (keyboard.upPressed) {
                 direction = "up";
                 if (keyboard.runPressed) {
                     speedSprite = 5;
-                    speed +=4;
+                    speed += 4;
 
                 }
             } else if (keyboard.downPressed) {
                 direction = "down";
                 if (keyboard.runPressed) {
                     speedSprite = 5;
-                    speed +=4;
+                    speed += 4;
                 }
 
             } else if (keyboard.leftPressed) {
                 direction = "left";
                 if (keyboard.runPressed) {
                     speedSprite = 5;
-                    speed +=4;
+                    speed += 4;
                 }
 
             } else if (keyboard.rightPressed) {
                 direction = "right";
                 if (keyboard.runPressed) {
                     speedSprite = 5;
-                    speed +=4;
+                    speed += 4;
                 }
 
             }
@@ -118,11 +125,25 @@ public class Player extends Entity {
             collisonOn = false;
             int objIndex = gp.cChecker.checkObject(this, true);
 
+            //Check NPC collision
+            int NPC_Index = gp.cChecker.checkEntity(this, gp.npc);
+            interactNPC(NPC_Index);
+
             //Check object collision
             gp.cChecker.checkTile(this);
             pickUpObject(objIndex);
+
+            //Check monster collision
+            int monster_index = gp.cChecker.checkEntity(this, gp.monsters);
+            contactMonster(monster_index);
+
+            //Check if player´s life is zero
+            if (life == 0) {
+                gp.gameState = gp.gameOverState;
+            }
+
             //If collision is false, player can move 
-            if (collisonOn == false) {
+            if (!collisonOn && !keyboard.swordPressed) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -139,6 +160,11 @@ public class Player extends Entity {
 
                 }
             }
+
+            if (life == 0) {
+                gp.gameState = gp.gameOverState;
+            }
+
             spriteCounter++;
             if (spriteCounter > speedSprite) {
                 if (spriteNumber == 1) {
@@ -147,6 +173,28 @@ public class Player extends Entity {
                     spriteNumber = 1;
                 }
                 spriteCounter = 0;
+            }
+
+        }
+
+        //this need to be outside of key statement
+        if (invencible) {
+            invencibleCounter++;
+            if (invencibleCounter > 60) {
+                invencible = false;
+                invencibleCounter = 0;
+            }
+        }
+
+    }
+
+    public void interactNPC(int i) {
+        if (gp.keyboard.swordPressed) {
+            if (i != 999) {
+                gp.gameState = gp.dioalogueState;
+                gp.npc[i].speak();
+            } else {
+                attacking = true;
             }
 
         }
@@ -160,24 +208,22 @@ public class Player extends Entity {
             switch (objectName) {
                 case "Key":
                     gp.playSE(1);
-                    
+
                     gp.obj[index] = null;
-                    if(hasKey == 0){
+                    if (hasKey == 0) {
                         gp.ui.showMessage("¿Una llave?");
-                    }
-                    else{
+                    } else {
                         gp.ui.showMessage("¿Otra llave?");
                     }
                     hasKey++;
                     break;
                 case "Door":
-                    if(hasKey > 0){
+                    if (hasKey > 0) {
                         gp.playSE(3);
                         gp.obj[index] = null;
                         hasKey--;
-                        
-                    }
-                    else{
+
+                    } else {
                         gp.playSE(5);
                         gp.ui.showMessage("¿Hum?... Creo que necisito una llave");
                     }
@@ -187,50 +233,135 @@ public class Player extends Entity {
                     gp.stopMusic();
                     gp.playSE(4);
                     break;
-                
-            }
 
+            }
         }
     }
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
+
         switch (direction) {
             case "up":
-                if (spriteNumber == 1) {
-                    image = up1;
+                if (!attacking) {
+                    if (spriteNumber == 1) {
+                        image = up1;
+                    }
+                    if (spriteNumber == 2) {
+
+                        image = up2;
+                    }
                 }
-                if (spriteNumber == 2) {
-                    image = up2;
+                if (attacking) {
+                    tempScreenY = screenY - gp.tileSize;
+                    if (spriteNumber == 1) {
+                        image = attackUp1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = attackUp2;
+                    }
                 }
+
                 break;
             case "down":
-                if (spriteNumber == 1) {
-                    image = down1;
+                if (!attacking) {
+                    if (spriteNumber == 1) {
+                        image = down1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = down2;
+                    }
                 }
-                if (spriteNumber == 2) {
-                    image = down2;
+                if (attacking) {
+                    if (spriteNumber == 1) {
+                        image = attackDown1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = attackDown2;
+                    }
                 }
                 break;
             case "left":
-                if (spriteNumber == 1) {
-                    image = left1;
+                if (!attacking) {
+                    if (spriteNumber == 1) {
+                        image = left1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = left2;
+                    }
                 }
-                if (spriteNumber == 2) {
-                    image = left2;
+                if (attacking) {
+                    tempScreenX = screenX - gp.tileSize;
+                    if (spriteNumber == 1) {
+                        image = attackLeft1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = attackLeft2;
+                    }
                 }
                 break;
             case "right":
-                if (spriteNumber == 1) {
-                    image = right1;
+                if (!attacking) {
+                    if (spriteNumber == 1) {
+                        image = right1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = right2;
+                    }
                 }
-                if (spriteNumber == 2) {
-                    image = right2;
+                if (attacking) {
+                    if (spriteNumber == 1) {
+                        image = attackRight1;
+                    }
+                    if (spriteNumber == 2) {
+                        image = attackRight2;
+                    }
                 }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        if (invencible) {
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+        }
+        g2.drawImage(image, tempScreenX, tempScreenY, null);
+
+        //Reset slphscomposite
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+    }
+
+    public void contactMonster(int i) {
+        if (i != 999) {
+            if (!invencible) {
+                life -= 1;
+                invencible = true;
+            }
+        }
+    }
+
+    public void setDefaultPossition() {
+        life = maxLife;
+        mana = maxMana;
+        invencible = false;
+    }
+
+    private void attacking() {
+        attacking = false;
+        spriteCounter++;
+        if (spriteCounter <= 5) {
+            spriteNumber = 1;
+        }
+        if (spriteCounter > 5 && spriteCounter <= 25) {
+            spriteNumber = 2;
+        }
+        if (spriteCounter > 25) {
+            spriteNumber = 1;
+            spriteCounter = 0;
+            attacking = false;
+
+        }
 
     }
+
 }
