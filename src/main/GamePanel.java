@@ -16,7 +16,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //Screen settings
     public  int originalTileSize = 16; //16*16 tile.
-    public final int scale = 5;
+    public final int scale = 4;
     public final int fps = 60;
     public final int tileSize = originalTileSize * scale; //64 X 64 PX TILES
     public final int maxScreenCol = 17;
@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     //Gamestate
     public int gameState;
     public SaveLoad saveLoad = new SaveLoad(this);
-    public final int mainState = 0, playState = 1, pauseState = 2, dioalogueState = 3, gameOverState = 4;
+    public final int mainState = 0, playState = 1, pauseState = 2, dioalogueState = 3, gameOverState = 4, finishedState = 5;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));

@@ -78,6 +78,11 @@ public class UI {
         if (gp.gameState == gp.gameOverState) {
             drawGameOverScreen();
         }
+        if(gp.gameState == gp.finishedState){
+            g2.setFont(font);
+            drawFinishGame();
+            
+        }
 
     }
 
@@ -238,7 +243,7 @@ public class UI {
     }
 
     private void drawKeysAndTime() {
-        g2.setFont(new Font("Arial", Font.PLAIN, 60));
+        g2.setFont(new Font("Arial", Font.PLAIN, 40));
         g2.drawImage(keyImage, gp.tileSize / 2, gp.tileSize + 50, gp.tileSize, gp.tileSize, null);
 
         g2.drawString("x " + gp.player.hasKey, gp.tileSize + 50, gp.tileSize * 2 + 25);
@@ -265,25 +270,45 @@ public class UI {
     }
 
     public void drawFinishGame() {
-        if (gameFinished) {
-            String text = "Encontraste un cofre";
-            int textLenght = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-            int x = gp.screenWidth / 2 - textLenght / 2;
-            int y = gp.screenHeight / 2 - (gp.tileSize);
-            g2.drawString(text, x, y);
 
-            g2.setFont(arial_80);
-            g2.setColor(Color.yellow);
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
+        int x, y;
+        String text;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110f));
+        text = "FELICITACIONES";
+        //Shadow
+        g2.setColor(Color.black);
+        x = getXForCenteredText(text);
+        y = gp.tileSize * 4;
+        //main
+        g2.setColor(Color.white);
+        g2.drawString(text, x - 4, y - 4);
 
-            text = "Felicidades";
-            textLenght = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-            x = (gp.screenWidth / 2) - textLenght / 2;
-            y = gp.screenHeight / 2 - (gp.tileSize * -1);
-            g2.drawString(text, x, y);
+        //Retry
+        g2.setFont(g2.getFont().deriveFont(50f));
+        text = "Volver a jugar";
+        x = getXForCenteredText(text);
+        y += gp.tileSize * 4;
+        g2.drawString(text, x, y);
+        if (commandNumber == 0) {
+            g2.drawString(">", x - 42, y);
 
-            gp.gameThread = null;
         }
-    }
 
+        //Exit
+        g2.setFont(g2.getFont().deriveFont(50f));
+        text = "Salir del juego";
+        x = getXForCenteredText(text);
+        y += 55;
+        g2.drawString(text, x + 5, y);
+
+        if (commandNumber == 1) {
+            g2.drawString(">", x - 42, y);
+        }
+
+
+
+    }
 
 }

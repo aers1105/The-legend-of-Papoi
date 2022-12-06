@@ -81,8 +81,8 @@ public class AssetSetter {
         gp.monsters[5].worldY = gp.tileSize*7;
         
         gp.monsters[6] = new GreenSlime(gp);
-        gp.monsters[6].worldX = gp.tileSize*12;
-        gp.monsters[6].worldY = gp.tileSize*15;
+        gp.monsters[6].worldX = gp.tileSize*10;
+        gp.monsters[6].worldY = gp.tileSize*9;
         
         gp.monsters[7] = new GreenSlime(gp);
         gp.monsters[7].worldX = gp.tileSize*38;

@@ -21,8 +21,7 @@ public class Chest extends Objects{
         try {
             image = ImageIO.read(getClass().getResourceAsStream("/images/Objetos/chest.png"));
             uTool.scaledImage(image, gp.tileSize, gp.tileSize);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
         }
 
     }

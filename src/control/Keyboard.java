@@ -2,14 +2,11 @@ package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.GamePanel;
 
 public class Keyboard implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed
-            , bombPressed, runPressed, enterPressed, savePressed, pausePressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, runPressed, enterPressed, savePressed, pausePressed;
 
     GamePanel gp;
 
@@ -53,9 +50,9 @@ public class Keyboard implements KeyListener {
                     try {
                         gp.saveLoad.load();
                         gp.gameState = gp.playState;
-                       
+
                     } catch (ClassNotFoundException ex) {
-                        
+
                     }
                 }
                 if (gp.ui.commandNumber == 2) {
@@ -64,7 +61,7 @@ public class Keyboard implements KeyListener {
             }
 
         }
-        
+
         //GameOver
         if (gp.gameState == gp.gameOverState) {
             if (code == KeyEvent.VK_W) {
@@ -78,7 +75,7 @@ public class Keyboard implements KeyListener {
                 gp.ui.commandNumber++;
                 if (gp.ui.commandNumber > 1) {
                     gp.ui.commandNumber = 0;
-                    
+
                 }
             }
             if (code == KeyEvent.VK_ENTER) {
@@ -91,8 +88,36 @@ public class Keyboard implements KeyListener {
                     gp.gameState = gp.playState;
                 }
             }
+        }
+        //Finished
+        if (gp.gameState == gp.finishedState) {
+            if (code == KeyEvent.VK_W) {
+                gp.ui.commandNumber--;
+                if (gp.ui.commandNumber < 0) {
+                    gp.ui.commandNumber = 1;
+                }
+
+            }
+            if (code == KeyEvent.VK_S) {
+                gp.ui.commandNumber++;
+                if (gp.ui.commandNumber > 1) {
+                    gp.ui.commandNumber = 0;
+
+                }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNumber == 0) {
+                    gp.reset();
+                    gp.gameState = gp.playState;
+                }
+                if (gp.ui.commandNumber == 1) {
+                    System.exit(0);
+
+                }
+            }
 
         }
+
         //PlayState
         if (gp.gameState == gp.playState) {
             if (code == KeyEvent.VK_W) {
@@ -130,7 +155,7 @@ public class Keyboard implements KeyListener {
         //PauseState
         if (gp.gameState == gp.pauseState) {
             if (code == KeyEvent.VK_ESCAPE) {
-                
+
                 gp.gameState = gp.playState;
             }
         }
