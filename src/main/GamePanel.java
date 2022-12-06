@@ -1,6 +1,7 @@
 package main;
 
 import control.Keyboard;
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import java.awt.Color;
@@ -48,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     //Gamestate
     public int gameState;
-
+    public SaveLoad saveLoad = new SaveLoad(this);
     public final int mainState = 0, playState = 1, pauseState = 2, dioalogueState = 3, gameOverState = 4;
 
     public GamePanel() {
@@ -183,5 +184,23 @@ public class GamePanel extends JPanel implements Runnable {
     public void playSE(int i) {
         se.setFile(i);
         se.play();
+    }
+    
+    public void retry(){
+        player.setDefaultPossitionAndSpeed();
+        player.setDefaultLifeAndAttack();
+        //player.setDefaultItems();
+        aSetter.setMonster();
+        //aSetter.setObject();
+        //aSetter.setNPC();
+        
+    }
+    public void reset(){
+        player.setDefaultValues();
+        aSetter.setMonster();
+        aSetter.setNPC();
+        aSetter.setObject();
+        ui.playTime = 0;
+        
     }
 }

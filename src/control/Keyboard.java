@@ -2,13 +2,17 @@ package control;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import main.GamePanel;
 
 public class Keyboard implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, runPressed, enterPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, runPressed, enterPressed, savePressed;
 
     GamePanel gp;
+
+    int timeCounter = 0;
 
     public Keyboard(GamePanel gp) {
         this.gp = gp;
@@ -17,15 +21,16 @@ public class Keyboard implements KeyListener {
     //Sin usar
     @Override
     public void keyTyped(KeyEvent ke) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
     public void keyPressed(KeyEvent ke) {
         int code = ke.getKeyCode();
 
+        timeCounter++;
         //MainState
-        if (gp.gameState == gp.mainState || gp.gameState == gp.gameOverState) {
+        if (gp.gameState == gp.mainState) {
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNumber--;
                 if (gp.ui.commandNumber < 0) {
@@ -44,7 +49,13 @@ public class Keyboard implements KeyListener {
                     gp.gameState = gp.playState;
                 }
                 if (gp.ui.commandNumber == 1) {
-                    //add latter
+                    try {
+                        gp.saveLoad.load();
+                        gp.gameState = gp.playState;
+                       
+                    } catch (ClassNotFoundException ex) {
+                        
+                    }
                 }
                 if (gp.ui.commandNumber == 2) {
                     System.exit(0);
@@ -52,7 +63,35 @@ public class Keyboard implements KeyListener {
             }
 
         }
+        
+        //GameOver
+        if (gp.gameState == gp.gameOverState) {
+            if (code == KeyEvent.VK_W) {
+                gp.ui.commandNumber--;
+                if (gp.ui.commandNumber < 0) {
+                    gp.ui.commandNumber = 1;
+                }
 
+            }
+            if (code == KeyEvent.VK_S) {
+                gp.ui.commandNumber++;
+                if (gp.ui.commandNumber > 1) {
+                    gp.ui.commandNumber = 0;
+                    
+                }
+            }
+            if (code == KeyEvent.VK_ENTER) {
+                if (gp.ui.commandNumber == 0) {
+                    gp.retry();
+                    gp.gameState = gp.playState;
+                }
+                if (gp.ui.commandNumber == 1) {
+                    gp.reset();
+                    gp.gameState = gp.playState;
+                }
+            }
+
+        }
         //PlayState
         if (gp.gameState == gp.playState) {
             if (code == KeyEvent.VK_W) {
@@ -76,16 +115,20 @@ public class Keyboard implements KeyListener {
             if (code == KeyEvent.VK_SHIFT) {
                 runPressed = true;
             }
-            if (code == KeyEvent.VK_ESCAPE) {
+            if (code == KeyEvent.VK_SPACE) {
                 gp.gameState = gp.pauseState;
             }
+
             if (code == KeyEvent.VK_ENTER) {
                 enterPressed = true;
+            }
+            if (code == KeyEvent.VK_0) {
+                savePressed = true;
             }
         }
         //PauseState
         if (gp.gameState == gp.pauseState) {
-            if (code == KeyEvent.VK_ESCAPE) {
+            if (code == KeyEvent.VK_SPACE) {
                 gp.gameState = gp.playState;
             }
         }
@@ -94,7 +137,7 @@ public class Keyboard implements KeyListener {
             if (code == KeyEvent.VK_I) {
                 gp.gameState = gp.playState;
             }
-        
+
         }
 
     }
@@ -127,7 +170,9 @@ public class Keyboard implements KeyListener {
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = false;
         }
-
+        if (code == KeyEvent.VK_ENTER) {
+            savePressed = false;
+        }
     }
 
 }

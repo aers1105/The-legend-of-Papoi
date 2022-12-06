@@ -23,7 +23,7 @@ public class UI {
     public int commandNumber = 0;
     BufferedImage heart_full, heart_half, healt_blank, keyImage;
 
-    double playTime;
+    public double playTime;
     DecimalFormat dFormat = new DecimalFormat("#0");
 
     public UI(GamePanel gp) {
@@ -58,7 +58,9 @@ public class UI {
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
             //drawTime();
-            drawKeys();
+            drawKeysAndTime();
+            drawPlayerLife();
+            
         }
         //Pausestate
         if (gp.gameState == gp.pauseState) {
@@ -185,22 +187,21 @@ public class UI {
         x = getXForCenteredText(text);
         y += gp.tileSize * 4;
         g2.drawString(text, x, y);
-        if(commandNumber == 0){
-            g2.drawString(">", x-40, y);
+        if (commandNumber == 0) {
+            g2.drawString(">", x - 42, y);
+
         }
 
         //Exit
         g2.setFont(g2.getFont().deriveFont(50f));
-        text = "Regresar al menú";
+        text = "Reiniciar juego";
         x = getXForCenteredText(text);
         y += 55;
-        g2.drawString(text, x+87, y);
-        
-        if(commandNumber == 1){
-            g2.drawString(">", x+47, y);
+        g2.drawString(text, x + 55, y);
+
+        if (commandNumber == 1) {
+            g2.drawString(">", x + 15, y);
         }
-        
-        
 
     }
 
@@ -235,7 +236,34 @@ public class UI {
 
     }
 
-    private void drawKeys() {
+    private void drawKeysAndTime() {
+        g2.setFont(new Font("Arial", Font.PLAIN, 60));
+        g2.drawImage(keyImage, gp.tileSize / 2, gp.tileSize + 50, gp.tileSize, gp.tileSize, null);
+
+        g2.drawString("x " + gp.player.hasKey, gp.tileSize + 50, gp.tileSize * 2 + 25);
+
+        //Time
+        playTime += (double) 1 / 60;
+        g2.drawString("Tiempo: " + dFormat.format(playTime), gp.tileSize * 13, 77);
+
+        //Message
+        if (messageOn) {
+            g2.setFont(g2.getFont().deriveFont(30F));
+            g2.drawString(message, gp.player.screenX, gp.player.screenY - 20);
+
+            //Erase on screen the message after 2 seconds.
+            messageCounter++;
+
+            if (messageCounter > 120) {
+                messageCounter = 0;
+                messageOn = false;
+            }
+
+        }
+
+    }
+    
+    public void drawFinishGame(){
         if (gameFinished) {
             String text = "Encontraste un cofre";
             int textLenght = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
@@ -253,33 +281,6 @@ public class UI {
             g2.drawString(text, x, y);
 
             gp.gameThread = null;
-
-        } else {
-
-            g2.setFont(new Font("Arial", Font.PLAIN, 60));
-            g2.drawImage(keyImage, gp.tileSize / 2, gp.tileSize + 50, gp.tileSize, gp.tileSize, null);
-
-            g2.drawString("x " + gp.player.hasKey, gp.tileSize + 50, gp.tileSize * 2 + 25);
-
-            //Time
-            playTime += (double) 1 / 60;
-            g2.drawString("Tiempo: " + dFormat.format(playTime), gp.tileSize * 13, 77);
-
-            //Message
-            if (messageOn) {
-                g2.setFont(g2.getFont().deriveFont(30F));
-                g2.drawString(message, gp.player.screenX, gp.player.screenY - 20);
-
-                //Erase on screen the message after 2 seconds.
-                messageCounter++;
-
-                if (messageCounter > 120) {
-                    messageCounter = 0;
-                    messageOn = false;
-                }
-            }
         }
-
     }
-
 }

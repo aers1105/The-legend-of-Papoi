@@ -150,10 +150,7 @@ public class CollisionChecker {
 
                 }
                 
-            if(gp.player.attacking){
-                gp.monsters[i].life =- gp.player.powerAttack;
-                
-            }
+            
                 entity.solidArea.x = entity.solidAreaDefaultX;
                 entity.solidArea.y = entity.solidAreaDefaultY;
                 target[i].solidArea.x = target[i].solidAreaDefaultX;

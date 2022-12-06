@@ -63,5 +63,29 @@ public class AssetSetter {
         gp.monsters[1] = new GreenSlime(gp);
         gp.monsters[1].worldX = gp.tileSize*23;
         gp.monsters[1].worldY = gp.tileSize*37;
+        
+        gp.monsters[2] = new GreenSlime(gp);
+        gp.monsters[2].worldX = gp.tileSize*22;
+        gp.monsters[2].worldY = gp.tileSize*36;
+        
+        gp.monsters[3] = new GreenSlime(gp);
+        gp.monsters[3].worldX = gp.tileSize*12;
+        gp.monsters[3].worldY = gp.tileSize*24;
+        
+        gp.monsters[4] = new GreenSlime(gp);
+        gp.monsters[4].worldX = gp.tileSize*12;
+        gp.monsters[4].worldY = gp.tileSize*25;
+        
+        gp.monsters[5] = new GreenSlime(gp);
+        gp.monsters[5].worldX = gp.tileSize*37;
+        gp.monsters[5].worldY = gp.tileSize*7;
+        
+        gp.monsters[6] = new GreenSlime(gp);
+        gp.monsters[6].worldX = gp.tileSize*12;
+        gp.monsters[6].worldY = gp.tileSize*15;
+        
+        gp.monsters[7] = new GreenSlime(gp);
+        gp.monsters[7].worldX = gp.tileSize*38;
+        gp.monsters[7].worldY = gp.tileSize*10;
     }
 }
