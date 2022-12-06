@@ -8,7 +8,8 @@ import main.GamePanel;
 
 public class Keyboard implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed, bombPressed, runPressed, enterPressed, savePressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, swordPressed
+            , bombPressed, runPressed, enterPressed, savePressed, pausePressed;
 
     GamePanel gp;
 
@@ -115,8 +116,8 @@ public class Keyboard implements KeyListener {
             if (code == KeyEvent.VK_SHIFT) {
                 runPressed = true;
             }
-            if (code == KeyEvent.VK_SPACE) {
-                gp.gameState = gp.pauseState;
+            if (code == KeyEvent.VK_ESCAPE) {
+                pausePressed = true;
             }
 
             if (code == KeyEvent.VK_ENTER) {
@@ -128,7 +129,8 @@ public class Keyboard implements KeyListener {
         }
         //PauseState
         if (gp.gameState == gp.pauseState) {
-            if (code == KeyEvent.VK_SPACE) {
+            if (code == KeyEvent.VK_ESCAPE) {
+                
                 gp.gameState = gp.playState;
             }
         }
@@ -170,8 +172,8 @@ public class Keyboard implements KeyListener {
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = false;
         }
-        if (code == KeyEvent.VK_ENTER) {
-            savePressed = false;
+        if (code == KeyEvent.VK_ESCAPE) {
+            pausePressed = false;
         }
     }
 

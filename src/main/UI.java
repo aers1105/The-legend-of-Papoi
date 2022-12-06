@@ -60,7 +60,7 @@ public class UI {
             //drawTime();
             drawKeysAndTime();
             drawPlayerLife();
-            
+
         }
         //Pausestate
         if (gp.gameState == gp.pauseState) {
@@ -87,6 +87,7 @@ public class UI {
 
         int y = gp.screenHeight / 2;
         g2.drawString(text, x, y);
+
     }
 
     public int getXForCenteredText(String text) {
@@ -262,8 +263,8 @@ public class UI {
         }
 
     }
-    
-    public void drawFinishGame(){
+
+    public void drawFinishGame() {
         if (gameFinished) {
             String text = "Encontraste un cofre";
             int textLenght = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
@@ -283,4 +284,6 @@ public class UI {
             gp.gameThread = null;
         }
     }
+
+
 }

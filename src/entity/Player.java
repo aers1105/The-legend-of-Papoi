@@ -17,7 +17,7 @@ public class Player extends Entity {
     //Indicate where playe drop 
     public int screenX;
     public int screenY;
-    public int hasKey, mana, maxMana ;
+    public int hasKey, mana, maxMana;
 
     public Player(GamePanel gp, Keyboard keyboard) {
         super(gp);
@@ -84,13 +84,28 @@ public class Player extends Entity {
         if (attacking) {
             attacking();
         }
+        if (keyboard.pausePressed) {
+                gp.gameState = gp.pauseState;
+                attacking = false;
+            }
+        if (keyboard.savePressed) {
+
+            try {
+                gp.saveLoad.save();
+                gp.ui.showMessage("Genial, guardé mi progreso.");
+            } catch (IOException ex) {
+                Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            keyboard.savePressed = false;
+        }
         if (keyboard.upPressed
                 || keyboard.downPressed
                 || keyboard.leftPressed
                 || keyboard.rightPressed
                 || keyboard.swordPressed
-               ) {
+                ) {
             
+
             if (keyboard.upPressed) {
                 direction = "up";
                 if (keyboard.runPressed) {
@@ -149,7 +164,6 @@ public class Player extends Entity {
             if (life == 0) {
                 gp.gameState = gp.gameOverState;
             }
-            
 
             //If collision is false, player can move 
             if (!collisonOn && !keyboard.swordPressed) {
@@ -169,8 +183,6 @@ public class Player extends Entity {
 
                 }
             }
-
-            
 
             spriteCounter++;
             if (spriteCounter > speedSprite) {
@@ -200,8 +212,7 @@ public class Player extends Entity {
             if (i != 999) {
                 gp.gameState = gp.dioalogueState;
                 gp.npc[i].speak();
-                gp.saveLoad.save();
-                
+
             } else {
                 attacking = true;
             }
@@ -210,7 +221,6 @@ public class Player extends Entity {
 
     }
 
-        
     public void pickUpObject(int index) {
         if (index != 999) {
             String objectName = gp.obj[index].name;

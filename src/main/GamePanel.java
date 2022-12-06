@@ -66,6 +66,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setNPC();
         aSetter.setMonster();
         playMusic(0);
+        
         gameState = playState;
         gameState = mainState;
     }
